@@ -52,6 +52,8 @@ jobs:
     needs: terraform
     if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
+    environment:
+      name: production
 
     env:
       GOOGLE_CREDENTIALS: ${{ secrets.GCP_SA_KEY }}
@@ -72,6 +74,9 @@ jobs:
 
       - name: Terraform init
         run: terraform init -input=false
+
+      - name: Manual approval gate
+        run: echo "Deployment requires approval in the GitHub environment 'production'."
 
       - name: Terraform apply
         run: terraform apply -input=false -auto-approve tfplan
